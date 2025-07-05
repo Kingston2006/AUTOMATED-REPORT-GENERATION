@@ -1,0 +1,126 @@
+pip install -q pandas matplotlib seaborn fpdf2
+
+from google.colab import files
+
+uploaded = files.upload()
+
+import pandas as pd
+
+import seaborn as sns
+
+import matplotlib.pyplot as plt
+
+from fpdf import FPDF
+
+import os
+
+
+filename = list(uploaded.keys())[0]  # first uploaded file
+
+df = pd.read_csv(filename)
+
+
+summary = df.describe().round(2)
+
+
+
+corr = df.corr(numeric_only=True)
+
+plt.figure(figsize=(8,6))
+
+sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f", linewidths=0.5)
+
+plt.title("Correlation Heatmap")
+
+heatmap_file = "correlation_heatmap.png"
+
+plt.tight_layout()
+
+plt.savefig(heatmap_file)
+
+plt.close()
+
+
+
+pdf = FPDF()
+
+pdf.set_auto_page_break(auto=True, margin=15)
+
+
+pdf.add_page()
+
+pdf.set_font("Arial", 'B', 18)
+
+pdf.cell(0, 10, "Automated Data Analysis Report ", ln=True, align='C')
+
+pdf.set_font("Arial", '', 12)
+
+pdf.ln(10)
+
+pdf.cell(0, 10, f"Dataset: {filename}", ln=True)
+
+pdf.cell(0, 10, f"Rows: {df.shape[0]}, Columns: {df.shape[1]}", ln=True)
+
+
+
+pdf.add_page()
+
+pdf.set_font("Arial", 'B', 14)
+
+pdf.cell(0, 10, "Descriptive Statistics ", ln=True)
+
+pdf.set_font("Arial", '', 10)
+
+pdf.ln(5)
+
+
+col_width = pdf.w / (len(summary.columns)+1)
+
+row_height = 8
+
+
+
+pdf.set_font("Arial", 'B', 10)
+
+pdf.cell(col_width, row_height, "Metric", border=1)
+
+for col in summary.columns:
+
+    pdf.cell(col_width, row_height, str(col), border=1)
+
+pdf.ln(row_height)
+
+
+
+pdf.set_font("Arial", '', 10)
+
+for idx in summary.index:
+
+    pdf.cell(col_width, row_height, idx, border=1)
+
+    for col in summary.columns:
+
+        pdf.cell(col_width, row_height, str(summary.loc[idx, col]), border=1)
+
+    pdf.ln(row_height)
+
+
+
+pdf.add_page()
+
+pdf.set_font("Arial", 'B', 14)
+
+pdf.cell(0, 10, "Correlation Heatmap", ln=True)
+
+pdf.image(heatmap_file, x=10, y=30, w=pdf.w - 20)
+
+
+
+output_file = "data_analysis_report.pdf"
+
+pdf.output(output_file)
+
+
+from google.colab import files
+
+files.download(output_file)
