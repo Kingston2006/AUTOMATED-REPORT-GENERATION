@@ -59,3 +59,7 @@ Fast and automatic: Generates a formatted report in seconds with minimal code ch
 Portable insights: Produces a professional-looking PDF for presentations, documentation, or sharing.
 
 Educational use: Helps beginners understand data analysis pipelines.
+
+
+![Image](https://github.com/user-attachments/assets/26f5ddc0-6f52-48d8-bfb6-b7aed9e31442)
+![Image](https://github.com/user-attachments/assets/6bdd5e2c-4ef4-4b21-a695-d8310623b8dc)
